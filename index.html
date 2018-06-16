@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="example">
+    <input v-model="message.value"></input>
+    <input v-model="banner"></input>
+    <p v-show="control">Computed reversed message: "{{ reversedMessage }}"</p>
+    <div v-if="seen"> Seen</div>
+</div>
+<script>
+
+    var vm = new Vue({
+        el: '#example',
+        data: {
+            message: {
+                 value: "message",
+                 id: "33"
+            },
+            banner : "banner",
+            control: true,
+            seen: true
+        },
+        // computed 的watcher是怎样的
+        computed: {
+            // 计算属性的 getter
+            // 下面的例子有一个问题， 初始渲染的时候reversedMessage收集的依赖为control、message和value当这三个变化的时候是会
+            // 因为没有添加banner为依赖，所以当banner变化是<p>元素的内容是不会变化的
+            reversedMessage: function () {
+                // `this` 指向 vm 实例
+                if (this.control) {
+                    this.control = false;
+                    this.banner;
+                    return this.message.value.split('').reverse().join('');
+
+                } else {
+                    this.control = true;
+                    return this.banner.split('').reverse().join('');
+
+                }
+
+            }
+        }
+
+    });
+
+    vm.$watch('message.value', function (newVal, oldVal) {
+         alert("something changed")
+        // 做点什么
+    })
+
+
+</script>
+
+
+
+</body>
+</html>
